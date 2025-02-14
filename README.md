@@ -14,7 +14,7 @@ There are 3 containers, Bob, Alice and Eve.
 
 - **Bob**: is hosting an http server, serving the files contained in `bob_files`
 - **Alice**: is a container with Firefox running on it. To connect to firefox from the host, visit `http://localhost:5800`.
-- **Eve**: is a container meant to be used via bash. To run commands, just run `docker exec -it mitm_eve /bin/bash`. This container has the `eve_files` folder mounted on the container as `/olicyber` (TODO: change this folder's name)
+- **Eve**: is a container meant to be used via bash. To run commands, just run `docker exec -it mitm_eve /bin/bash`. This container has the `eve_files` folder mounted on the container as `/olicyber`
 
 The three containers are connected together with a docker bridge network called `mitm`
 
@@ -22,7 +22,7 @@ The three containers are connected together with a docker bridge network called 
 
 1. Install Docker, docker-compose, then run `docker-compose up -d`
 2. Connect to Alice's Firefox instance and visit `http://bob/`. This should show the actual website served by Bob
-3. You may also connect to alice via command line (`docker exec -it mitm_alice /bin/sh`) and see which MAC address corresponds to Bob's IP address
+3. You may also connect to alice via command line (`docker exec -it mitm_alice /bin/sh`) and see which MAC address corresponds to Bob's IP address (`arp`)
 4. Open 2 instances of bash on Eve's container (or, equivalently, use tmux with two splits) and run the `dig` command to discover the IPs of Alice and Bob:
 
 ```
@@ -42,12 +42,14 @@ In the second bash window:
 $ arpspoof -t <bob_ip> <alice_ip>
 ```
 
-6. Now you may verify in Alice's `sh` instance that `ip neighbor` shows that Bob's IP is now associated to Eve's MAC address, meaning that the ARP spoofing was successful. In any case, reloading the page still shows the normal website, since Eve is not blocking any packets yet.
+6. Now you may verify in Alice's `sh` instance that `ip neighbor` shows that Bob's IP is now associated to Eve's MAC address, meaning that the ARP spoofing was successful (`arp`). In any case, reloading the page still shows the normal website, since Eve is not blocking any packets yet.
 7. Now run the `add_iptables_rule.sh` script in the `olicyber` folder. This will add a rule to `iptables` to forward every packet with destination port 80 to the proxy
 8. You may verify that Alice's browser will give an error when reloading the page. This is because Eve is not blocking the packets in pitables and forwarding them to the proxy. Since the proxy is not active yet, the packets are simply dropped.
 9. Now we activate the proxy in passive mode:
 
 ```
+$ . pyenv/bin/activate
+$ pip3 install mitmproxy
 $ mitmproxy -m transparent
 ```
 
