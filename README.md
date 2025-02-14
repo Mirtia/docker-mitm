@@ -23,7 +23,7 @@ The three containers are connected together with a docker bridge network called 
 1. Install Docker, docker-compose, then run `docker-compose up -d`
 2. Connect to Alice's Firefox instance and visit `http://bob/`. This should show the actual website served by Bob
 3. You may also connect to alice via command line (`docker exec -it mitm_alice /bin/sh`) and see which MAC address corresponds to Bob's IP address (`arp`)
-4. Open 2 instances of bash on Eve's container  via command line (`docker exec -it mitm_eve /bin/bash`) (or, equivalently, use tmux (available in the container) with two splits) and run the `dig` command to discover the IPs of Alice and Bob:
+4. Open at least two instances of bash on Eve's container  via command line (`docker exec -it mitm_eve /bin/bash`) or, equivalently, use tmux (available in the container) and run the `dig` command to discover the IPs of Alice and Bob:
 
 ```sh
 dig alice
@@ -44,7 +44,7 @@ arpspoof -t <bob_ip> <alice_ip>
 
 The `arpspoof` need to run continuously while performing the attack since the ARP cache entries eventually.
 You can use `tmux` to create a new session and split the panes with shortcuts `CTRL+B` and `%` (vertical split)  or `"` (horizontal split). To detach, use `CTRL+B` and then `D`.
-Tmux is preferrable since you can easily attach and detach the sessions.
+Tmux is preferrable since you can easily attach and detach the sessions whenever you want.
 
 Else, you can initiate them with `nohup` to run them to background.
 ```sh
@@ -70,9 +70,11 @@ mitmproxy -m transparent
 
 10. Reload the browser page: the honest page will show again, but mitmproxy will show that the request passed through Eve
 11. Now shut down the proxy and activate it again, this time with the script that modifies the contents of the page:
+
+```sh
+mitmproxy -m transparent -s /olicyber/proxy.py
 ```
-$ mitmproxy -m transparent -s /olicyber/proxy.py
-```
+
 12. Reload the browser page: the attacker has changed the contents of the website.
 13. To shut down everything use the `del_iptables_rul.sh` script in the `olicyber` folder to remove the iptables rule and turn off the two arpspoof instances
 
