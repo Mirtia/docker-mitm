@@ -2,7 +2,7 @@
 
 This is a really simple demo to showcase a Man in the Middle (MitM) attack via ARP poisoning using Docker containers.
 
-The idea is that this example should be really quick to set-up and lightweight: the only softwares to download are Docker and docker-compose, everything else is managed by the container's configuration. Then, the only thing that remains is to run the attack itself.
+The idea is that this example should be really quick to set-up and lightweight: the only software required is `docker`, everything else is managed by the container's configuration. The only thing that remains is to run the attack itself.
 
 This small demo was used in the context of [Olicyber.IT](http://olicyber.it), for the Network Security lesson.
 
@@ -42,7 +42,7 @@ In the second bash window:
 arpspoof -t <bob_ip> <alice_ip>
 ```
 
-The `arpspoof` need to run continuously while performing the attack since the ARP cache entries eventually.
+The `arpspoof` need to run continuously while performing the attack since the ARP cache entries eventually go back to their original state.
 You can use `tmux` to create a new session and split the panes with shortcuts `CTRL+B` and `%` (vertical split)  or `"` (horizontal split). To detach, use `CTRL+B` and then `D`.
 Tmux is preferrable since you can easily attach and detach the sessions whenever you want.
 
