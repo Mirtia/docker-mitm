@@ -1,5 +1,3 @@
-version: "3.7"
-
 services:
     alice:
         image: jlesage/firefox
